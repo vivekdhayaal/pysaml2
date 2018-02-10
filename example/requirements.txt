@@ -1,2 +1,4 @@
 mako
 cherrypy
+pycryptodome
+pycryptodomex

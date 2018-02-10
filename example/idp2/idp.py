@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+
+import sys
+def_path = ['', '/usr/lib/python2.7/site-packages', '/usr/lib64/python27.zip', '/usr/lib64/python2.7', '/usr/lib64/python2.7/plat-linux2', '/usr/lib64/python2.7/lib-tk', '/usr/lib64/python2.7/lib-old', '/usr/lib64/python2.7/lib-dynload', '/usr/lib64/python2.7/site-packages']
+sys.path.extend(def_path[1:])
+
 import argparse
 import base64
 import importlib

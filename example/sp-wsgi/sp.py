@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
+import sys
+def_path = ['', '/usr/lib/python2.7/site-packages', '/usr/lib64/python27.zip', '/usr/lib64/python2.7', '/usr/lib64/python2.7/plat-linux2', '/usr/lib64/python2.7/lib-tk', '/usr/lib64/python2.7/lib-old', '/usr/lib64/python2.7/lib-dynload', '/usr/lib64/python2.7/site-packages']
+sys.path.extend(def_path[1:])
+
 import argparse
 import cgi
 import importlib
@@ -849,7 +853,12 @@ def application(environ, start_response):
 
 
 if __name__ == '__main__':
-    from cherrypy import wsgiserver
+    try:
+        from cheroot.wsgi import Server as WSGIServer
+        from cheroot.ssl.builtin import BuiltinSSLAdapter
+    except ImportError:
+        from cherrypy.wsgiserver import CherryPyWSGIServer as WSGIServer
+        from cherrypy.wsgiserver.ssl_builtin import BuiltinSSLAdapter
 
     _parser = argparse.ArgumentParser()
     _parser.add_argument('-d', dest='debug', action='store_true',
@@ -923,14 +932,11 @@ if __name__ == '__main__':
         pass
     ds.DefaultSignature(sign_alg, digest_alg)
 
-    SRV = wsgiserver.CherryPyWSGIServer((HOST, PORT), application)
+    SRV = WSGIServer((HOST, PORT), application)
 
     _https = ""
     if service_conf.HTTPS:
-        from cherrypy.wsgiserver import ssl_pyopenssl
-
-        SRV.ssl_adapter = ssl_pyopenssl.pyOpenSSLAdapter(SERVER_CERT,
-                                                         SERVER_KEY, CERT_CHAIN)
+        SRV.ssl_adapter = BuiltinSSLAdapter(SERVER_CERT, SERVER_KEY, CERT_CHAIN)
         _https = " using SSL/TLS"
     logger.info("Server starting")
     print("SP listening on %s:%s%s" % (HOST, PORT, _https))
