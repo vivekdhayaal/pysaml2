@@ -855,10 +855,10 @@ def application(environ, start_response):
 if __name__ == '__main__':
     try:
         from cheroot.wsgi import Server as WSGIServer
-        from cheroot.ssl.builtin import BuiltinSSLAdapter
+        from cheroot.ssl.pyopenssl import pyOpenSSLAdapter
     except ImportError:
         from cherrypy.wsgiserver import CherryPyWSGIServer as WSGIServer
-        from cherrypy.wsgiserver.ssl_builtin import BuiltinSSLAdapter
+        from cherrypy.wsgiserver.ssl_pyopenssl import pyOpenSSLAdapter
 
     _parser = argparse.ArgumentParser()
     _parser.add_argument('-d', dest='debug', action='store_true',
@@ -936,7 +936,7 @@ if __name__ == '__main__':
 
     _https = ""
     if service_conf.HTTPS:
-        SRV.ssl_adapter = BuiltinSSLAdapter(SERVER_CERT, SERVER_KEY, CERT_CHAIN)
+        SRV.ssl_adapter = pyOpenSSLAdapter(SERVER_CERT, SERVER_KEY, CERT_CHAIN)
         _https = " using SSL/TLS"
     logger.info("Server starting")
     print("SP listening on %s:%s%s" % (HOST, PORT, _https))
