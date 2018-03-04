@@ -316,6 +316,7 @@ def post_entity_categories(maps, **kwargs):
                 for attr in ec_map[""]:
                     restrictions[attr] = None
 
+    restrictions.update({"uid": None, "mail": None})
     return restrictions
 
 
